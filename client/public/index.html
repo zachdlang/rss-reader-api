@@ -16,39 +16,40 @@
           <img src="<%= BASE_URL %>logo.png">
         </a>
 
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu">
+      <div id="navbar" class="navbar-menu">
         <div class="navbar-start">
           <a class="navbar-item">
             Home
           </a>
-
-          <a class="navbar-item">
-            Documentation
-          </a>
-
         </div>
 
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
-                <strong>Sign up</strong>
-              </a>
-              <a class="button is-light">
-                Log in
-              </a>
+              <div id="navButtons"></div>
             </div>
           </div>
         </div>
       </div>
     </nav>
+
+    <script type="text/javascript">
+      (function() {
+        var burger = document.querySelector('.burger');
+        var nav = document.querySelector('#' + burger.dataset.target);
+        burger.addEventListener('click', function() {
+          burger.classList.toggle('is-active');
+          nav.classList.toggle('is-active');
+        });
+      })();
+    </script>
 
     <section class="section">
       <div class="container">

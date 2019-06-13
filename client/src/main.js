@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import axios from 'axios';
 import App from './App.vue';
+import Nav from './components/Nav.vue';
 import router from './router';
 import store from './store/store';
 import 'bulma/css/bulma.css';
@@ -32,3 +33,8 @@ new Vue({
       });
   },
 }).$mount('#app');
+
+new Vue({
+  store,
+  render: h => h(Nav),
+}).$mount('#navButtons');
