@@ -35,7 +35,7 @@ export default new Vuex.Store({
     [AUTH_REQUEST]: ({ commit, dispatch }, user) => { // eslint-disable-line arrow-body-style
       return new Promise((resolve, reject) => {
         commit(AUTH_REQUEST);
-        axios({ url: 'http://localhost:5000/api/login', data: user, method: 'POST' })
+        axios({ url: '/login', data: user, method: 'POST' })
           .then((resp) => {
             const { token } = resp.data;
             localStorage.setItem('user-token', token);

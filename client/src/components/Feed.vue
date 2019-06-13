@@ -33,8 +33,7 @@ export default {
   },
   methods: {
     getMessage() {
-      const path = 'http://localhost:5000/api/feeds';
-      axios.get(path)
+      axios.get('/feeds')
         .then((resp) => {
           this.articles = resp.data;
         })

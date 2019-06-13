@@ -7,6 +7,8 @@ import 'bulma/css/bulma.css';
 
 Vue.config.productionTip = false;
 
+axios.defaults.baseURL = process.env.VUE_APP_FLASK_API_ENDPOINT;
+
 const token = localStorage.getItem('user-token');
 if (token && token !== 'undefined') {
   axios.defaults.headers.common.Authorization = token;
