@@ -1,13 +1,18 @@
 import Vue from 'vue';
 import axios from 'axios';
+import FlashMessage from '@smartweb/vue-flash-message';
 import App from './App.vue';
 import Nav from './components/Nav.vue';
 import router from './router';
 import store from './store/store';
 import 'bulma/css/bulma.css';
 
+
 Vue.config.productionTip = false;
 
+Vue.use(FlashMessage, {
+  time: 3000,
+});
 axios.defaults.baseURL = process.env.VUE_APP_FLASK_API_ENDPOINT;
 
 const token = localStorage.getItem('user-token');
