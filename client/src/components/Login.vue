@@ -6,7 +6,7 @@
       <div class="field">
         <div class="control has-icons-left">
           <input required type="text" class="input" placeholder="Username"
-            @change="setUsername(username)" />
+            v-model="username" />
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
           </span>
@@ -15,7 +15,7 @@
       <div class="field">
         <div class="control has-icons-left">
           <input required type="password" class="input" placeholder="Password"
-            @change="setPassword(password)" />
+            v-model="password" />
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
           </span>
@@ -36,9 +36,11 @@ import { AUTH_REQUEST } from '../store/store';
 
 export default {
   name: 'Login',
-  props: {
-    username: String,
-    password: String,
+  data() {
+    return {
+      username: '',
+      password: '',
+    };
   },
   methods: {
     login() {
@@ -59,12 +61,6 @@ export default {
             });
           }
         });
-    },
-    setUsername(username) {
-      this.username = username;
-    },
-    setPassword(password) {
-      this.password = password;
     },
   },
 };
