@@ -14,7 +14,7 @@ from sitetools.utility import (
 
 # instantiate the app
 app = BetterExceptionFlask(__name__)
-app.config.from_pyfile('site_config.cfg')
+app.config.from_pyfile('config.py')
 app.secret_key = app.config['SECRETKEY']
 
 # enable CORS
