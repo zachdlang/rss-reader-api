@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { AUTH_REQUEST } from '../store/store';
+import { AUTH_LOGIN } from '../store/store';
 
 export default {
   name: 'Login',
@@ -45,7 +45,7 @@ export default {
   methods: {
     login() {
       const { username, password } = this;
-      this.$store.dispatch(AUTH_REQUEST, { username, password })
+      this.$store.dispatch(AUTH_LOGIN, { username, password })
         .then(() => {
           this.$router.push('/');
         })

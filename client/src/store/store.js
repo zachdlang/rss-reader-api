@@ -4,7 +4,7 @@ import axios from 'axios';
 
 Vue.use(Vuex);
 
-export const AUTH_REQUEST = 'AUTH_REQUEST';
+export const AUTH_LOGIN = 'AUTH_LOGIN';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_ERROR = 'AUTH_ERROR';
 export const AUTH_LOGOUT = 'AUTH_LOGOUT';
@@ -20,7 +20,7 @@ export default new Vuex.Store({
     authStatus: state => state.status,
   },
   mutations: {
-    [AUTH_REQUEST]: (state) => {
+    [AUTH_LOGIN]: (state) => {
       state.status = 'loading'; // eslint-disable-line no-param-reassign
     },
     [AUTH_SUCCESS]: (state, token) => {
@@ -32,9 +32,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    [AUTH_REQUEST]: ({ commit, dispatch }, user) => { // eslint-disable-line arrow-body-style
+    [AUTH_LOGIN]: ({ commit, dispatch }, user) => { // eslint-disable-line arrow-body-style
       return new Promise((resolve, reject) => {
-        commit(AUTH_REQUEST);
+        commit(AUTH_LOGIN);
         axios({ url: '/login', data: user, method: 'POST' })
           .then((resp) => {
             const { token } = resp.data;

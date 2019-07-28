@@ -10,10 +10,9 @@ export default {
   name: 'Logout',
   methods: {
     logout() {
-      this.$store.dispatch(AUTH_LOGOUT)
-        .then(() => {
-          this.$router.push('/login');
-        });
+      commit(AUTH_LOGOUT);
+      localStorage.removeItem('user-token');
+      this.$router.push('/login');
     },
   },
   created() {
