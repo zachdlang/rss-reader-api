@@ -7,8 +7,6 @@ Vue.use(Vuex);
 export const AUTH_LOGIN = 'AUTH_LOGIN';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_ERROR = 'AUTH_ERROR';
-export const AUTH_LOGOUT = 'AUTH_LOGOUT';
-export const USER_REQUEST = 'USER_REQUEST';
 
 export default new Vuex.Store({
   state: {
@@ -41,7 +39,6 @@ export default new Vuex.Store({
             localStorage.setItem('user-token', token);
             axios.defaults.headers.common.Authorization = token;
             commit(AUTH_SUCCESS, token);
-            dispatch(USER_REQUEST);
             resolve(resp);
           })
           .catch((error) => {
@@ -49,13 +46,6 @@ export default new Vuex.Store({
             localStorage.removeItem('user-token');
             reject(error);
           });
-      });
-    },
-    [AUTH_LOGOUT]: ({ commit }) => { // eslint-disable-line arrow-body-style
-      return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
-        commit(AUTH_LOGOUT);
-        localStorage.removeItem('user-token');
-        resolve();
       });
     },
   },

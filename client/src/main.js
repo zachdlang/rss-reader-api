@@ -5,7 +5,6 @@ import App from './App.vue';
 import Nav from './components/Nav.vue';
 import router from './router';
 import store from './store/store';
-import { AUTH_LOGOUT } from './store/store';
 import 'bulma/css/bulma.css';
 
 
@@ -32,7 +31,6 @@ new Vue({
         return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
           /* eslint no-underscore-dangle: ["error", { "allow": ["__isRetryRequest"] }] */
           if (error.response.status === 401) {
-            commit(AUTH_LOGOUT);
             localStorage.removeItem('user-token');
             this.$router.push('/login');
           }
