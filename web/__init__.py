@@ -6,10 +6,10 @@ from logging.handlers import SMTPHandler
 from flask import jsonify, request
 from flask_cors import CORS
 
+from web.authorisation import generate_auth_token, auth_token_required
 from sitetools.utility import (
 	BetterExceptionFlask, disconnect_database, handle_exception,
-	params_to_dict, authenticate_user, generate_auth_token,
-	auth_token_required
+	params_to_dict, authenticate_user
 )
 
 # instantiate the app
@@ -51,7 +51,7 @@ def login():
 
 	if userid is not None:
 		# success
-		token = generate_auth_token(userid, expiration=36000)
+		token = generate_auth_token(userid)
 		return jsonify(token=token)
 
 	# fail
@@ -60,7 +60,7 @@ def login():
 
 @app.route('/api/feeds', methods=['GET'])
 @auth_token_required
-def feeds():
+def feeds(userid):
 	# fetch_query
 	rss_url = 'https://goodbearcomics.com/feed/'
 	resp = requests.get(rss_url).text
