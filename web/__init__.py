@@ -9,7 +9,7 @@ from flask_cors import CORS
 from web.authorisation import generate_auth_token, auth_token_required
 from sitetools.utility import (
 	BetterExceptionFlask, disconnect_database, handle_exception,
-	params_to_dict, authenticate_user
+	params_to_dict, authenticate_user, fetch_query, mutate_query
 )
 
 # instantiate the app
@@ -61,23 +61,58 @@ def login():
 @app.route('/api/feeds', methods=['GET'])
 @auth_token_required
 def feeds(userid):
-	# fetch_query
-	rss_url = 'https://goodbearcomics.com/feed/'
-	resp = requests.get(rss_url).text
-	tree = ET.fromstring(resp)[0]
-	image = tree.find('image').find('url').text
-	articles = []
-	for child in tree.findall('item'):
-		a = {
-			'title': child.find('title').text,
-			'link': child.find('link').text,
-			'description': child.find('description').text,
-			'published': child.find('pubDate').text,
-			'guid': child.find('guid').text,
-			'image': image
-		}
-		articles.append(a)
-	return jsonify(articles)
+	items = fetch_query(
+		"""
+		SELECT
+			fi.id, fi.name, fi.url, fi.description,
+			fi.published, fi.image
+		FROM feed_item fi
+		LEFT JOIN feed f ON (f.id = fi.feedid)
+		WHERE fi.read = false
+		AND f.userid = %s
+		ORDER BY fi.published DESC
+		""",
+		(userid,)
+	)
+	return jsonify(items)
+
+
+@app.route('/api/feeds/refresh', methods=['GET'])
+def feeds_refresh():
+	feedlist = fetch_query("SELECT * FROM feed")
+	for f in feedlist:
+		resp = requests.get(f['url']).text
+		tree = ET.fromstring(resp)[0]
+		image = tree.find('image').find('url').text
+		items = []
+		for child in tree.findall('item'):
+			item = {
+				'feedid': f['id'],
+				'name': child.find('title').text,
+				'url': child.find('link').text,
+				'description': child.find('description').text,
+				'published': child.find('pubDate').text,
+				'guid': child.find('guid').text,
+				'image': image
+			}
+			items.append(item)
+
+		mutate_query(
+			"""
+			INSERT INTO feed_item (
+				feedid, name, url, description,
+				published, guid, image
+			) SELECT
+				%(feedid)s, %(name)s, %(url)s, %(description)s,
+				%(published)s, %(guid)s, %(image)s
+			WHERE NOT EXISTS (
+				SELECT 1 FROM feed_item WHERE feedid = %(feedid)s AND guid = %(guid)s
+			)
+			""",
+			items,
+			executemany=True
+		)
+	return jsonify()
 
 
 if __name__ == '__main__':
