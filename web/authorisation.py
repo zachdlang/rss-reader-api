@@ -18,7 +18,7 @@ def _gen_token_payload(userid, lifespan, token_type):
 	return {
 		'iss': 'RSS-READER-API',
 		'iat': issued,
-		'exp': issued + timedelta(hours=1),
+		'exp': issued + lifespan,
 		'sub': userid,
 		'token_type': token_type,
 	}
