@@ -14,6 +14,5 @@ CREATE TABLE IF NOT EXISTS feed_item (
 	description TEXT,
 	published TIMESTAMP NOT NULL,
 	guid TEXT NOT NULL,
-	image TEXT,
 	read BOOLEAN NOT NULL DEFAULT false
 )WITH OIDS;

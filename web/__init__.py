@@ -83,7 +83,6 @@ def feeds_refresh():
 	for f in feedlist:
 		resp = requests.get(f['url']).text
 		tree = ET.fromstring(resp)[0]
-		image = tree.find('image').find('url').text
 		items = []
 		for child in tree.findall('item'):
 			item = {
@@ -92,26 +91,30 @@ def feeds_refresh():
 				'url': child.find('link').text,
 				'description': child.find('description').text,
 				'published': child.find('pubDate').text,
-				'guid': child.find('guid').text,
-				'image': image
+				'guid': child.find('guid').text
 			}
 			items.append(item)
 
-		mutate_query(
-			"""
-			INSERT INTO feed_item (
-				feedid, name, url, description,
-				published, guid, image
-			) SELECT
-				%(feedid)s, %(name)s, %(url)s, %(description)s,
-				%(published)s, %(guid)s, %(image)s
-			WHERE NOT EXISTS (
-				SELECT 1 FROM feed_item WHERE feedid = %(feedid)s AND guid = %(guid)s
+		if items:
+			mutate_query(
+				"""
+				INSERT INTO feed_item (
+					feedid, name, url, description,
+					published, guid
+				) SELECT
+					%(feedid)s, %(name)s, %(url)s, %(description)s,
+					%(published)s, %(guid)s
+				WHERE NOT EXISTS (
+					SELECT 1 FROM feed_item WHERE feedid = %(feedid)s AND guid = %(guid)s
+				)
+				""",
+				items,
+				executemany=True
 			)
-			""",
-			items,
-			executemany=True
-		)
+			mutate_query(
+				"UPDATE feed SET refreshed = now() WHERE id = %s",
+				(f['id'],)
+			)
 	return jsonify()
 
 
