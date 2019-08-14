@@ -1,5 +1,5 @@
 import requests
-import xml.etree.ElementTree as ET
+from bs4 import BeautifulSoup
 import logging
 from logging.handlers import SMTPHandler
 
@@ -64,8 +64,8 @@ def feeds(userid):
 	items = fetch_query(
 		"""
 		SELECT
-			fi.id, fi.name, fi.url, fi.description,
-			fi.published, fi.image
+			fi.id, fi.name, fi.url, fi.content,
+			fi.published
 		FROM feed_item fi
 		LEFT JOIN feed f ON (f.id = fi.feedid)
 		WHERE fi.read = false
@@ -81,17 +81,17 @@ def feeds(userid):
 def feeds_refresh():
 	feedlist = fetch_query("SELECT * FROM feed")
 	for f in feedlist:
-		resp = requests.get(f['url']).text
-		tree = ET.fromstring(resp)[0]
+		resp = requests.get(f['url']).content
+		soup = BeautifulSoup(resp, 'xml')
 		items = []
-		for child in tree.findall('item'):
+		for child in soup.find_all('item'):
 			item = {
 				'feedid': f['id'],
-				'name': child.find('title').text,
-				'url': child.find('link').text,
-				'description': child.find('description').text,
-				'published': child.find('pubDate').text,
-				'guid': child.find('guid').text
+				'name': child.find('title').string,
+				'url': child.find('link').string,
+				'content': child.find('content:encoded').string,
+				'published': child.find('pubDate').string,
+				'guid': child.find('guid').string
 			}
 			items.append(item)
 
@@ -99,10 +99,10 @@ def feeds_refresh():
 			mutate_query(
 				"""
 				INSERT INTO feed_item (
-					feedid, name, url, description,
+					feedid, name, url, content,
 					published, guid
 				) SELECT
-					%(feedid)s, %(name)s, %(url)s, %(description)s,
+					%(feedid)s, %(name)s, %(url)s, %(content)s,
 					%(published)s, %(guid)s
 				WHERE NOT EXISTS (
 					SELECT 1 FROM feed_item WHERE feedid = %(feedid)s AND guid = %(guid)s
