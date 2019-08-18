@@ -65,7 +65,7 @@ def feeds(userid):
 		"""
 		SELECT
 			fi.id, fi.name, fi.url, fi.content,
-			fi.published
+			fi.content, fi.published
 		FROM feed_item fi
 		LEFT JOIN feed f ON (f.id = fi.feedid)
 		WHERE fi.read = false
@@ -75,26 +75,6 @@ def feeds(userid):
 		(userid,)
 	)
 	return jsonify(items)
-
-
-@app.route('/api/article', methods=['GET'])
-@auth_token_required
-def article(userid):
-	params = params_to_dict(request.json)
-
-	article = fetch_query(
-		"""
-		SELECT
-			fi.id, fi.name
-		FROM feed_item fi
-		LEFT JOIN feed f ON (f.id = fi.feedid)
-		WHERE fi.id = %s
-		AND f.userid = %s
-		""",
-		(params.get('articleid'), userid,),
-		single_row=True
-	)
-	return jsonify(article)
 
 
 @app.route('/api/feeds/refresh', methods=['GET'])
