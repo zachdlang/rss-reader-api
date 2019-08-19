@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS feed_item (
 	feedid INTEGER NOT NULL REFERENCES feed(id) ON DELETE CASCADE,
 	name TEXT NOT NULL,
 	url TEXT NOT NULL,
+	description TEXT,
 	content TEXT,
 	published TIMESTAMP NOT NULL,
 	guid TEXT NOT NULL,

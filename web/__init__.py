@@ -65,7 +65,7 @@ def feeds(userid):
 		"""
 		SELECT
 			fi.id, fi.name, fi.url, fi.content,
-			fi.content, fi.published
+			fi.description, fi.content, fi.published
 		FROM feed_item fi
 		LEFT JOIN feed f ON (f.id = fi.feedid)
 		WHERE fi.read = false
@@ -89,6 +89,7 @@ def feeds_refresh():
 				'feedid': f['id'],
 				'name': child.find('title').string,
 				'url': child.find('link').string,
+				'description': child.find('description').string,
 				'content': child.find('content:encoded').string,
 				'published': child.find('pubDate').string,
 				'guid': child.find('guid').string
@@ -99,11 +100,11 @@ def feeds_refresh():
 			mutate_query(
 				"""
 				INSERT INTO feed_item (
-					feedid, name, url, content,
-					published, guid
+					feedid, name, url, description,
+					content, published, guid
 				) SELECT
-					%(feedid)s, %(name)s, %(url)s, %(content)s,
-					%(published)s, %(guid)s
+					%(feedid)s, %(name)s, %(url)s, %(description)s,
+					%(content)s, %(published)s, %(guid)s
 				WHERE NOT EXISTS (
 					SELECT 1 FROM feed_item WHERE feedid = %(feedid)s AND guid = %(guid)s
 				)
