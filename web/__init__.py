@@ -65,7 +65,8 @@ def feed(userid):
 		"""
 		SELECT
 			fi.id, fi.name, fi.url, fi.content,
-			fi.description, fi.content, fi.published
+			fi.description, fi.content, fi.published,
+			fi.read
 		FROM feed_item fi
 		LEFT JOIN feed f ON (f.id = fi.feedid)
 		WHERE fi.read = false
