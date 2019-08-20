@@ -58,9 +58,9 @@ def login():
 	return jsonify(error='Login failed.'), 401
 
 
-@app.route('/api/feeds', methods=['GET'])
+@app.route('/api/feed', methods=['GET'])
 @auth_token_required
-def feeds(userid):
+def feed(userid):
 	items = fetch_query(
 		"""
 		SELECT
@@ -77,8 +77,23 @@ def feeds(userid):
 	return jsonify(items)
 
 
-@app.route('/api/feeds/refresh', methods=['GET'])
-def feeds_refresh():
+@app.route('/api/article/markread', methods=['POST'])
+@auth_token_required
+def article_markread(userid):
+	params = params_to_dict(request.json)
+	mutate_query(
+		"""
+		UPDATE feed_item SET read = true
+		WHERE id = %s
+		AND (SELECT userid FROM feed WHERE id = feedid) = %s
+		""",
+		(params['articleid'], userid,)
+	)
+	return jsonify()
+
+
+@app.route('/api/feed/refresh', methods=['GET'])
+def feed_refresh():
 	feedlist = fetch_query("SELECT * FROM feed")
 	for f in feedlist:
 		resp = requests.get(f['url']).content
