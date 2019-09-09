@@ -1,2 +1,4 @@
+web/__pycache__/*
 config.py
-web/__pycache__/
+
+tests/__pycache__/*
