@@ -43,6 +43,11 @@ def teardown(error):
 	disconnect_database()
 
 
+@app.route('/ping')
+def ping():
+	return jsonify(ping='pong')
+
+
 @app.route('/api/login', methods=['POST'])
 def login():
 	params = params_to_dict(request.json)
