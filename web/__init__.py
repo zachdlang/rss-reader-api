@@ -3,17 +3,17 @@ from bs4 import BeautifulSoup
 import logging
 from logging.handlers import SMTPHandler
 
-from flask import jsonify, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from web.authorisation import generate_auth_token, auth_token_required
-from sitetools.utility import (
-	BetterExceptionFlask, disconnect_database, handle_exception,
-	params_to_dict, authenticate_user, fetch_query, mutate_query
-)
+from flasktools import handle_exception, params_to_dict
+from flasktools.auth import authenticate_user
+from flasktools.db import disconnect_database, fetch_query, mutate_query
+
 
 # instantiate the app
-app = BetterExceptionFlask(__name__)
+app = Flask(__name__)
 app.config.from_pyfile('config.py')
 app.secret_key = app.config['SECRETKEY']
 

@@ -8,7 +8,7 @@ from flask import request, jsonify
 
 # Local imports
 from web import config
-from sitetools.utility import fetch_query
+from flasktools.db import fetch_query
 
 LIFE_SPAN = timedelta(hours=1)
 
