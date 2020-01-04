@@ -12,7 +12,7 @@ from flasktools.db import disconnect_database, fetch_query, mutate_query
 
 
 # instantiate the app
-app = Flask('rss-reader-api')
+app = Flask(__name__)
 app.secret_key = config.SECRETKEY
 
 # enable CORS
