@@ -6,14 +6,14 @@ from logging.handlers import SMTPHandler
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from web.authorisation import generate_auth_token, auth_token_required
 from flasktools import handle_exception, params_to_dict
 from flasktools.auth import authenticate_user
+from flasktools.auth.oauth import generate_auth_token, auth_token_required
 from flasktools.db import disconnect_database, fetch_query, mutate_query
 
 
 # instantiate the app
-app = Flask(__name__)
+app = Flask('rss-reader-api')
 app.config.from_pyfile('config.py')
 app.secret_key = app.config['SECRETKEY']
 
